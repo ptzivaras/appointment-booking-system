@@ -9,3 +9,5 @@ export const cancelAppointment = (id) => axiosInstance.delete(`/appointments/${i
 export const getDoctorSlots = () => axiosInstance.get('/slots/my');
 
 export const createSlot = (data) => axiosInstance.post('/slots', data);
+
+export const getMyAppointments = () => axiosInstance.get('/appointments/my');

@@ -96,4 +96,23 @@ const cancelAppointment = async (req, res) => {
   }
 };
 
-module.exports = { getAvailableAppointments, bookAppointment, cancelAppointment };
+const getMyAppointments = async (req, res) => {
+  try {
+    const appointments = await prisma.appointment.findMany({
+      where: { patientId: req.user.id },
+      include: {
+        slot: {
+          include: {
+            doctor: { select: { id: true, firstName: true, lastName: true } },
+          },
+        },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+    res.json(appointments);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
+module.exports = { getAvailableAppointments, bookAppointment, cancelAppointment, getMyAppointments };
