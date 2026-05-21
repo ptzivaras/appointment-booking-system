@@ -1,24 +1,36 @@
 import { useEffect, useState } from 'react';
-import { getDoctorSlots, cancelAppointment, createSlot } from '../services/appointmentService';
+import { getDoctorSlots, cancelAppointment, createSlot, updateAppointmentStatus } from '../services/appointmentService';
 
 function DoctorDashboard() {
   const [slots, setSlots] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const [newSlotDate, setNewSlotDate] = useState('');
   const [addError, setAddError] = useState('');
   const [adding, setAdding] = useState(false);
 
   useEffect(() => {
-    fetchSlots();
-  }, []);
-
-  const fetchSlots = () => {
-    setLoading(true);
     getDoctorSlots()
       .then((res) => setSlots(res.data))
       .catch(() => setError('Failed to load slots'))
       .finally(() => setLoading(false));
+  }, []);
+
+  const handleComplete = async (appointmentId, slotId) => {
+    try {
+      await updateAppointmentStatus(appointmentId, 'COMPLETED');
+      setSlots((prev) =>
+        prev.map((s) =>
+          s.id === slotId
+            ? { ...s, appointment: { ...s.appointment, status: 'COMPLETED' } }
+            : s
+        )
+      );
+      setSuccess('Appointment marked as completed.');
+    } catch (err) {
+      setError(err.response?.data?.message || 'Failed to update status');
+    }
   };
 
   const handleCancel = async (appointmentId, slotId) => {
@@ -29,6 +41,7 @@ function DoctorDashboard() {
           s.id === slotId ? { ...s, isBooked: false, appointment: null } : s
         )
       );
+      setSuccess('Appointment cancelled and slot is now available.');
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to cancel appointment');
     }
@@ -40,10 +53,13 @@ function DoctorDashboard() {
     setAdding(true);
     try {
       const res = await createSlot({ date: new Date(newSlotDate).toISOString() });
-      setSlots((prev) => [...prev, { ...res.data, appointment: null }].sort(
-        (a, b) => new Date(a.date) - new Date(b.date)
-      ));
+      setSlots((prev) =>
+        [...prev, { ...res.data, appointment: null }].sort(
+          (a, b) => new Date(a.date) - new Date(b.date)
+        )
+      );
       setNewSlotDate('');
+      setSuccess('Slot added successfully.');
     } catch (err) {
       setAddError(err.response?.data?.message || 'Failed to create slot');
     } finally {
@@ -71,6 +87,7 @@ function DoctorDashboard() {
       <h2>Doctor Dashboard</h2>
 
       {error && <p className="error-msg">{error}</p>}
+      {success && <p className="success-msg">{success}</p>}
 
       <section className="dashboard-section">
         <h3>Add New Slot</h3>
@@ -104,13 +121,26 @@ function DoctorDashboard() {
                   {slot.appointment.reason && (
                     <span className="appointment-reason">"{slot.appointment.reason}"</span>
                   )}
+                  <span className={`status-badge status-${slot.appointment.status.toLowerCase()}`}>
+                    {slot.appointment.status}
+                  </span>
                 </div>
-                <button
-                  className="btn-cancel"
-                  onClick={() => handleCancel(slot.appointment.id, slot.id)}
-                >
-                  Cancel
-                </button>
+                {slot.appointment.status === 'PENDING' && (
+                  <div className="card-actions">
+                    <button
+                      className="btn-complete"
+                      onClick={() => handleComplete(slot.appointment.id, slot.id)}
+                    >
+                      Mark Completed
+                    </button>
+                    <button
+                      className="btn-cancel"
+                      onClick={() => handleCancel(slot.appointment.id, slot.id)}
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                )}
               </li>
             ))}
           </ul>

@@ -96,6 +96,58 @@ const cancelAppointment = async (req, res) => {
   }
 };
 
+const updateAppointmentStatus = async (req, res) => {
+  const { id } = req.params;
+  const { status } = req.body;
+
+  if (status !== 'COMPLETED') {
+    return res.status(400).json({ message: 'Only COMPLETED status is allowed via this endpoint' });
+  }
+
+  try {
+    const appointment = await prisma.appointment.findUnique({
+      where: { id: parseInt(id) },
+      include: { slot: true },
+    });
+
+    if (!appointment) {
+      return res.status(404).json({ message: 'Appointment not found' });
+    }
+    if (appointment.slot.doctorId !== req.user.id) {
+      return res.status(403).json({ message: 'Not authorized' });
+    }
+    if (appointment.status !== 'PENDING') {
+      return res.status(400).json({ message: 'Only PENDING appointments can be marked as completed' });
+    }
+
+    const updated = await prisma.appointment.update({
+      where: { id: parseInt(id) },
+      data: { status: 'COMPLETED' },
+    });
+
+    res.json(updated);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
+const getAllAppointments = async (req, res) => {
+  try {
+    const appointments = await prisma.appointment.findMany({
+      where: {
+        slot: { doctorId: req.user.id },
+      },
+      include: {
+        slot: { select: { date: true } },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+    res.json(appointments);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
 const getMyAppointments = async (req, res) => {
   try {
     const appointments = await prisma.appointment.findMany({
@@ -115,4 +167,11 @@ const getMyAppointments = async (req, res) => {
   }
 };
 
-module.exports = { getAvailableAppointments, bookAppointment, cancelAppointment, getMyAppointments };
+module.exports = {
+  getAvailableAppointments,
+  bookAppointment,
+  cancelAppointment,
+  getMyAppointments,
+  updateAppointmentStatus,
+  getAllAppointments,
+};

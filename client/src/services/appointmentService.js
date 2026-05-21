@@ -11,3 +11,8 @@ export const getDoctorSlots = () => axiosInstance.get('/slots/my');
 export const createSlot = (data) => axiosInstance.post('/slots', data);
 
 export const getMyAppointments = () => axiosInstance.get('/appointments/my');
+
+export const updateAppointmentStatus = (id, status) =>
+  axiosInstance.patch(`/appointments/${id}/status`, { status });
+
+export const getAllAppointments = () => axiosInstance.get('/appointments/all');
