@@ -269,3 +269,131 @@ body {
   font-weight: 600;
   margin-top: 0.5rem;
 }
+
+/* Doctor Dashboard */
+.dashboard {
+  padding: 2rem 0;
+}
+
+.dashboard h2 {
+  margin-bottom: 1.5rem;
+  color: #1e3a5f;
+}
+
+.dashboard-section {
+  margin-bottom: 2.5rem;
+}
+
+.dashboard-section h3 {
+  font-size: 1.1rem;
+  color: #374151;
+  margin-bottom: 1rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.add-slot-form {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.add-slot-form input[type='datetime-local'] {
+  padding: 0.6rem 0.85rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-family: inherit;
+  outline: none;
+}
+
+.add-slot-form input[type='datetime-local']:focus {
+  border-color: #2563eb;
+}
+
+.add-slot-form .btn-primary {
+  width: auto;
+  margin-top: 0;
+}
+
+.appointment-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.appointment-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 1rem 1.2rem;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.appointment-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.appointment-date {
+  font-weight: 700;
+  color: #1d4ed8;
+  font-size: 0.95rem;
+}
+
+.patient-name {
+  font-weight: 600;
+  color: #111827;
+}
+
+.patient-email {
+  font-size: 0.85rem;
+  color: #6b7280;
+}
+
+.appointment-reason {
+  font-size: 0.85rem;
+  color: #9ca3af;
+  font-style: italic;
+}
+
+.btn-cancel {
+  background: #fee2e2;
+  color: #dc2626;
+  border: 1px solid #fca5a5;
+  padding: 0.4rem 0.9rem;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.2s;
+}
+
+.btn-cancel:hover {
+  background: #fecaca;
+}
+
+.slot-item.free {
+  cursor: default;
+}
+
+.slot-item.free:hover {
+  border-color: #e5e7eb;
+  background: white;
+}
+
+.slot-badge {
+  font-size: 0.8rem;
+  background: #dcfce7;
+  color: #16a34a;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  font-weight: 600;
+}
