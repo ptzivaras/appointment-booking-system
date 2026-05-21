@@ -1,15 +1,16 @@
-import { useState } from 'react'
-import './App.css'
+import { BrowserRouter } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
+import AppRoutes from './routes/AppRoutes';
+import './styles/global.css';
 
 function App() {
-
   return (
-    <>
-      <div className="ticks">
-
-      </div>
-    </>
-  )
+    <BrowserRouter>
+      <AuthProvider>
+        <AppRoutes />
+      </AuthProvider>
+    </BrowserRouter>
+  );
 }
 
-export default App
+export default App;
