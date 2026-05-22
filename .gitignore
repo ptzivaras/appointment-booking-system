@@ -1,0 +1,10 @@
+node_modules/
+.env
+dist/
+build/
+coverage/
+.vscode/
+.DS_Store
+.claude/settings.local.json
+IMG-TCH - Assignment - Junior Full Stack Web Developer - v1.1.pdf
+Delete 01.jpg
